@@ -25,14 +25,15 @@ fn main() {
         elf_calories += num;
     }
 
-    calories.sort();
-    // let max = calories.iter().max_by(|x, y| x.cmp(y)).unwrap();
-    let max = calories.last().unwrap();
+    // sort in reverse (highest first)
+    calories.sort_by(|a, b| b.cmp(a));
+    let max = calories.first().unwrap();
+
     println!("Part 1:");
     println!("max {}", max);
 
     println!("Part 2:");
 
-    let t: i32 = calories[calories.len() - 3..calories.len()].iter().sum();
-    println!("first 3 total: {}", t);
+    let k: i32 = calories.iter().take(3).sum();
+    println!("first 3 total: {}", k);
 }
