@@ -8,22 +8,10 @@ fn main() {
         Err(e) => panic!("error! {}", e),
     };
 
-    let mut elf_calories = 0;
-    let mut calories = vec![];
-
-    for line in contents.lines() {
-        // println!("{line}");
-        if line.is_empty() {
-            // println!("Total calories {}", elf_calories);
-            calories.push(elf_calories);
-            elf_calories = 0;
-            continue;
-            // break;
-        }
-        let num: i32 = line.parse().expect("failed to parse");
-        // println!("{}", num);
-        elf_calories += num;
-    }
+    let mut calories: Vec<i32> = contents
+        .split("\n\n")
+        .map(|group| group.lines().map(|num| num.parse::<i32>().unwrap()).sum())
+        .collect();
 
     // sort in reverse (highest first)
     calories.sort_by(|a, b| b.cmp(a));
