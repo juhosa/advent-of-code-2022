@@ -1,4 +1,4 @@
-use std::collections::HashSet;
+use std::collections::{HashMap, HashSet};
 use std::fs;
 
 fn main() {
@@ -12,15 +12,16 @@ fn main() {
         Err(e) => panic!("error reading input file: {e}"),
     };
 
-    // part1(&contents);
+    part1(&contents);
     part2(&contents);
 }
 
 fn part1(contents: &str) {
-    let mut d = ('a'..='z').collect::<Vec<char>>();
-    let mut d2 = ('A'..='Z').collect::<Vec<char>>();
-
-    d.append(&mut d2);
+    let char_scores = ('a'..='z')
+        .chain('A'..='Z')
+        .enumerate()
+        .map(|(i, c)| (c, i + 1))
+        .collect::<HashMap<char, usize>>();
 
     let mut total_score = 0;
     for line in contents.lines() {
@@ -33,12 +34,7 @@ fn part1(contents: &str) {
 
         let in_both: Vec<&char> = hs1.intersection(&hs2).into_iter().collect();
 
-        let score: usize = in_both
-            .iter()
-            .map(|c| d.iter().position(|&d| d == **c).unwrap() + 1)
-            .collect::<Vec<usize>>()
-            .into_iter()
-            .sum();
+        let score = char_scores.get(in_both.first().unwrap()).unwrap();
 
         total_score += score;
     }
@@ -47,10 +43,12 @@ fn part1(contents: &str) {
 }
 
 fn part2(contents: &str) {
-    let mut d = ('a'..='z').collect::<Vec<char>>();
-    let mut d2 = ('A'..='Z').collect::<Vec<char>>();
+    let char_scores = ('a'..='z')
+        .chain('A'..='Z')
+        .enumerate()
+        .map(|(i, c)| (c, i + 1))
+        .collect::<HashMap<char, usize>>();
 
-    d.append(&mut d2);
     let mut total_score = 0;
 
     let lines = contents.lines().collect::<Vec<&str>>();
@@ -69,12 +67,7 @@ fn part2(contents: &str) {
             acc.intersection(hs).cloned().collect()
         });
 
-        let score: usize = inter
-            .iter()
-            .map(|c| d.iter().position(|&d| d == *c).unwrap() + 1)
-            .collect::<Vec<usize>>()
-            .into_iter()
-            .sum();
+        let score = char_scores.get(inter.iter().next().unwrap()).unwrap();
 
         total_score += score;
     }
